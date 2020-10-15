@@ -58,8 +58,11 @@ void pinMode( uint32_t ulPin, uint32_t ulMode )
     break ;
 
     case OUTPUT:
-      // enable input, to support reading back values, with pullups disabled
-      PORT->Group[g_APinDescription[ulPin].ulPort].PINCFG[g_APinDescription[ulPin].ulPin].reg=(uint8_t)(PORT_PINCFG_INEN) ;
+      // enable input, to support reading back values
+      PORT->Group[g_APinDescription[ulPin].ulPort].PINCFG[g_APinDescription[ulPin].ulPin].bit.INEN = 1 ;
+
+      // disable pullups
+      PORT->Group[g_APinDescription[ulPin].ulPort].PINCFG[g_APinDescription[ulPin].ulPin].bit.PULLEN = 0 ;
 
       // Set pin to output mode
       PORT->Group[g_APinDescription[ulPin].ulPort].DIRSET.reg = (uint32_t)(1<<g_APinDescription[ulPin].ulPin) ;
@@ -86,6 +89,15 @@ void digitalWrite( uint32_t ulPin, uint32_t ulVal )
   if ( (PORT->Group[port].DIRSET.reg & pinMask) == 0 ) {
     // the pin is not an output, disable pull-up if val is LOW, otherwise enable pull-up
     PORT->Group[port].PINCFG[pin].bit.PULLEN = ((ulVal == LOW) ? 0 : 1) ;
+  }
+
+  // Handle reversed RGB LED pins
+  if ((ulPin == PIN_LED_RED) || (ulPin == PIN_LED_GREEN) || (ulPin == PIN_LED_BLUE))
+  {
+	if (ulVal)
+		ulVal = 0L;
+	else
+		ulVal = 1L;
   }
 
   switch ( ulVal )

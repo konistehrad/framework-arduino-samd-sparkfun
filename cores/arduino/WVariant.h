@@ -37,22 +37,20 @@ typedef enum _EAnalogChannel
   ADC_Channel5=5,
   ADC_Channel6=6,
   ADC_Channel7=7,
-#if defined __SAMD21J18A__
   ADC_Channel8=8,
   ADC_Channel9=9,
-#endif // __SAMD21J18A__
+/*
   ADC_Channel10=10,
   ADC_Channel11=11,
-#if defined __SAMD21J18A__
   ADC_Channel12=12,
   ADC_Channel13=13,
   ADC_Channel14=14,
   ADC_Channel15=15,
-#endif // __SAMD21J18A__
   ADC_Channel16=16,
   ADC_Channel17=17,
   ADC_Channel18=18,
   ADC_Channel19=19,
+*/
   DAC_Channel0,
 } EAnalogChannel ;
 
@@ -60,34 +58,14 @@ typedef enum _EAnalogChannel
 typedef enum _ETCChannel
 {
   NOT_ON_TIMER=-1,
-  TCC0_CH0 = (0<<8)|(0),
-  TCC0_CH1 = (0<<8)|(1),
-  TCC0_CH2 = (0<<8)|(2),
-  TCC0_CH3 = (0<<8)|(3),
-  TCC0_CH4 = (0<<8)|(0), // Channel 4 is 0!
-  TCC0_CH5 = (0<<8)|(1), // Channel 5 is 1!
-  TCC0_CH6 = (0<<8)|(2), // Channel 6 is 2!
-  TCC0_CH7 = (0<<8)|(3), // Channel 7 is 3!
-  TCC1_CH0 = (1<<8)|(0),
-  TCC1_CH1 = (1<<8)|(1),
-  TCC1_CH2 = (1<<8)|(0), // Channel 2 is 0!
-  TCC1_CH3 = (1<<8)|(1), // Channel 3 is 1!
-  TCC2_CH0 = (2<<8)|(0),
-  TCC2_CH1 = (2<<8)|(1),
-  TCC2_CH2 = (2<<8)|(0), // Channel 2 is 0!
-  TCC2_CH3 = (2<<8)|(1), // Channel 3 is 1!
-  TC3_CH0  = (3<<8)|(0),
-  TC3_CH1  = (3<<8)|(1),
-  TC4_CH0  = (4<<8)|(0),
-  TC4_CH1  = (4<<8)|(1),
-  TC5_CH0  = (5<<8)|(0),
-  TC5_CH1  = (5<<8)|(1),
-#if defined __SAMD21J18A__
-  TC6_CH0  = (6<<8)|(0),
-  TC6_CH1  = (6<<8)|(1),
-  TC7_CH0  = (7<<8)|(0),
-  TC7_CH1  = (7<<8)|(1),
-#endif // __SAMD21J18A__
+  TCC0_CH0 = (0<<8)|(0), // 0
+  TCC0_CH1 = (0<<8)|(1), // 1
+  TCC0_CH2 = (0<<8)|(2), // 2
+  TCC0_CH3 = (0<<8)|(3), // 3
+  TC1_CH0  = (1<<8)|(0), // 256 1
+  TC1_CH1  = (1<<8)|(1), // 257 1
+  TC2_CH0  = (2<<8)|(0), // 512 2
+  TC2_CH1  = (2<<8)|(1), // 513 2
 } ETCChannel ;
 
 extern const void* g_apTCInstances[TCC_INST_NUM+TC_INST_NUM] ;
@@ -104,30 +82,10 @@ typedef enum _EPWMChannel
   PWM0_CH1=TCC0_CH1,
   PWM0_CH2=TCC0_CH2,
   PWM0_CH3=TCC0_CH3,
-  PWM0_CH4=TCC0_CH4,
-  PWM0_CH5=TCC0_CH5,
-  PWM0_CH6=TCC0_CH6,
-  PWM0_CH7=TCC0_CH7,
-  PWM1_CH0=TCC1_CH0,
-  PWM1_CH1=TCC1_CH1,
-  PWM1_CH2=TCC1_CH2,
-  PWM1_CH3=TCC1_CH3,
-  PWM2_CH0=TCC2_CH0,
-  PWM2_CH1=TCC2_CH1,
-  PWM2_CH2=TCC2_CH2,
-  PWM2_CH3=TCC2_CH3,
-  PWM3_CH0=TC3_CH0,
-  PWM3_CH1=TC3_CH1,
-  PWM4_CH0=TC4_CH0,
-  PWM4_CH1=TC4_CH1,
-  PWM5_CH0=TC5_CH0,
-  PWM5_CH1=TC5_CH1,
-#if defined __SAMD21J18A__
-  PWM6_CH0=TC6_CH0,
-  PWM6_CH1=TC6_CH1,
-  PWM7_CH0=TC7_CH0,
-  PWM7_CH1=TC7_CH1,
-#endif // __SAMD21J18A__
+  PWM1_CH0=TC1_CH0,
+  PWM1_CH1=TC1_CH1,
+  PWM2_CH0=TC2_CH0,
+  PWM2_CH1=TC2_CH1,
 } EPWMChannel ;
 
 typedef enum _EPortType
@@ -188,6 +146,7 @@ typedef enum _EPioType
 /**
  * Pin Attributes to be OR-ed
  */
+ 
 #define PIN_ATTR_NONE          (0UL<<0)
 #define PIN_ATTR_COMBO         (1UL<<0)
 #define PIN_ATTR_ANALOG        (1UL<<1)
@@ -227,6 +186,23 @@ extern const PinDescription g_APinDescription[] ;
 #define GCM_EVSYS_CHANNEL_3       (0x0AU)
 #define GCM_EVSYS_CHANNEL_4       (0x0BU)
 #define GCM_EVSYS_CHANNEL_5       (0x0CU)
+
+#if defined(__SAMD11D14AM__) || defined(__SAMD11C14A__) || defined(__SAMD11D14AS__)
+
+#define GCM_SERCOMx_SLOW          (0x0DU)
+#define GCM_SERCOM0_CORE          (0x0EU)
+#define GCM_SERCOM1_CORE          (0x0FU)
+#define GCM_SERCOM2_CORE          (0x10U)
+#define GCM_TCC0                  (0x11U)
+#define GCM_TC1_TC2               (0x12U)
+#define GCM_ADC                   (0x13U)
+#define GCM_AC_DIG                (0x14U)
+#define GCM_AC_ANA                (0x15U)
+#define GCM_DAC                   (0x16U)
+#define GCM_PTC                   (0x17U)
+
+#else
+
 #define GCM_EVSYS_CHANNEL_6       (0x0DU)
 #define GCM_EVSYS_CHANNEL_7       (0x0EU)
 #define GCM_EVSYS_CHANNEL_8       (0x0FU)
@@ -251,6 +227,8 @@ extern const PinDescription g_APinDescription[] ;
 #define GCM_PTC                   (0x22U)
 #define GCM_I2S_0                 (0x23U)
 #define GCM_I2S_1                 (0x24U)
+
+#endif
 
 #ifdef __cplusplus
 } // extern "C"

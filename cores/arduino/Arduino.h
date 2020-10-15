@@ -55,10 +55,6 @@ extern "C"{
 
 void yield( void ) ;
 
-/* system functions */
-int main( void );
-void init( void );
-
 /* sketch */
 void setup( void ) ;
 void loop( void ) ;
@@ -128,6 +124,6 @@ void loop( void ) ;
 #include "USB/USBDesc.h"
 #include "USB/USBCore.h"
 #include "USB/USBAPI.h"
-#include "USB/USB_host.h"
+//#include "USB/USB_host.h" // removed for SAMD11
 
 #endif // Arduino_h

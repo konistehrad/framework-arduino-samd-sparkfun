@@ -44,11 +44,10 @@ public:
 
 	// USB mode (device/host)
 	inline void setUSBDeviceMode() { usb.CTRLA.bit.MODE = USB_CTRLA_MODE_DEVICE_Val; }
-	inline void setUSBHostMode()   { usb.CTRLA.bit.MODE = USB_CTRLA_MODE_HOST_Val;   }
+//	inline void setUSBHostMode()   { usb.CTRLA.bit.MODE = USB_CTRLA_MODE_HOST_Val;   }
 
 	inline void runInStandby()   { usb.CTRLA.bit.RUNSTDBY = 1; }
 	inline void noRunInStandby() { usb.CTRLA.bit.RUNSTDBY = 0; }
-	inline void wakeupHost()     { usb.CTRLB.bit.UPRSM = 1; }
 
 	// USB speed
 	inline void setFullSpeed()       { usb.CTRLB.bit.SPDCONF = USB_DEVICE_CTRLB_SPDCONF_FS_Val;   }
@@ -107,7 +106,7 @@ public:
 	inline void epBank0EnableStalled(ep_t ep)          { usb.DeviceEndpoint[ep].EPINTENSET.bit.STALL0 = 1; }
 	inline void epBank1EnableStalled(ep_t ep)          { usb.DeviceEndpoint[ep].EPINTENSET.bit.STALL1 = 1; }
 	inline void epBank0EnableTransferComplete(ep_t ep) { usb.DeviceEndpoint[ep].EPINTENSET.bit.TRCPT0 = 1; }
-	inline void epBank1EnableTransferComplete(ep_t ep) { usb.DeviceEndpoint[ep].EPINTENSET.bit.TRCPT1 = 1; }
+	inline void epBank1EnableTransferComplete(ep_t ep) { usb.DeviceEndpoint[ep].EPINTENSET.bit.TRCPT0 = 1; }
 
 	inline void epBank0DisableSetupReceived(ep_t ep)    { usb.DeviceEndpoint[ep].EPINTENCLR.bit.RXSTP = 1; }
 	inline void epBank0DisableStalled(ep_t ep)          { usb.DeviceEndpoint[ep].EPINTENCLR.bit.STALL0 = 1; }
@@ -319,34 +318,30 @@ public:
 			usbd.epBank0AckTransferComplete(ep);
 			//usbd.epBank0AckTransferFailed(ep); // XXX
 
-			// Update counters and swap banks for non-ZLP's
+			// Update counters and swap banks
 			if (incoming == 0) {
 				last0 = usbd.epBank0ByteCount(ep);
-				if (last0 != 0) {
-					incoming = 1;
-					usbd.epBank0SetAddress(ep, const_cast<uint8_t *>(data1));
-					synchronized {
-						ready0 = true;
-						if (ready1) {
-							notify = true;
-							return;
-						}
-						notify = false;
+				incoming = 1;
+				usbd.epBank0SetAddress(ep, const_cast<uint8_t *>(data1));
+				ready0 = true;
+				synchronized {
+					if (ready1) {
+						notify = true;
+						return;
 					}
+					notify = false;
 				}
 			} else {
 				last1 = usbd.epBank0ByteCount(ep);
-				if (last1 != 0) {
-					incoming = 0;
-					usbd.epBank0SetAddress(ep, const_cast<uint8_t *>(data0));
-					synchronized {
-						ready1 = true;
-						if (ready0) {
-							notify = true;
-							return;
-						}
-						notify = false;
+				incoming = 0;
+				usbd.epBank0SetAddress(ep, const_cast<uint8_t *>(data0));
+				synchronized {
+					ready1 = true;
+					if (ready0) {
+						notify = true;
+						return;
 					}
+					notify = false;
 				}
 			}
 			release();

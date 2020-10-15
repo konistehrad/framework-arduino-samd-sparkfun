@@ -19,13 +19,20 @@
 #define ARDUINO_MAIN
 #include "Arduino.h"
 
-// Weak empty variant initialization function.
-// May be redefined by variant files.
-void initVariant() __attribute__((weak));
-void initVariant() { }
+void initVariant()
+{
+	// Preset onboard RGB LED to outputs/off
+	pinMode(PIN_LED_RED,OUTPUT);
+	pinMode(PIN_LED_GREEN,OUTPUT);
+	pinMode(PIN_LED_BLUE,OUTPUT);
+	digitalWrite(PIN_LED_RED,LOW);
+	digitalWrite(PIN_LED_GREEN,LOW);
+	digitalWrite(PIN_LED_BLUE,LOW);
 
-// Initialize C library
-extern "C" void __libc_init_array(void);
+	// Turn on "+" sewtab
+	pinMode(PIN_POWER,OUTPUT);
+	digitalWrite(PIN_POWER,HIGH);
+}
 
 /*
  * \brief Main entry point of Arduino application
@@ -33,9 +40,6 @@ extern "C" void __libc_init_array(void);
 int main( void )
 {
   init();
-
-  __libc_init_array();
-
   initVariant();
 
   delay(1);

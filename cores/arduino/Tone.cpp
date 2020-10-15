@@ -31,12 +31,13 @@ volatile int64_t toggleCount;
 volatile bool toneIsActive = false;
 volatile bool firstTimeRunning = false;
 
-#define TONE_TC         TC5
-#define TONE_TC_IRQn    TC5_IRQn
+// Use TC1 for tone on SAMD11 (unused by PWM for pins)
+#define TONE_TC         TC1
+#define TONE_TC_IRQn    TC1_IRQn
 #define TONE_TC_TOP     0xFFFF
 #define TONE_TC_CHANNEL 0
 
-void TC5_Handler (void) __attribute__ ((weak, alias("Tone_Handler")));
+void TC1_Handler (void) __attribute__ ((weak, alias("Tone_Handler")));
 
 static inline void resetTC (Tc* TCx)
 {
@@ -67,8 +68,9 @@ void tone (uint32_t outputPin, uint32_t frequency, uint32_t duration)
     
     NVIC_SetPriority(TONE_TC_IRQn, 0);
       
-    // Enable GCLK for TC4 and TC5 (timer counter input clock)
-    GCLK->CLKCTRL.reg = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID(GCM_TC4_TC5));
+    // Enable GCLK for TC1 and TC2
+    GCLK->CLKCTRL.reg = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID(GCM_TC1_TC2));
+//    GCLK->CLKCTRL.reg = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID(GCM_TC4_TC5));
     while (GCLK->STATUS.bit.SYNCBUSY);
   }
   

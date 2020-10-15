@@ -26,9 +26,6 @@
 #ifdef CDC_ENABLED
 #define CDC_INTERFACE_COUNT 2
 #define CDC_ENPOINT_COUNT 3
-#else
-#define CDC_INTERFACE_COUNT 0
-#define CDC_ENPOINT_COUNT 0
 #endif
 
 // CDC
@@ -44,7 +41,7 @@
 #define CDC_TX CDC_ENDPOINT_IN
 #endif
 
-#define ISERIAL_MAX_LEN        65
+#define ISERIAL_MAX_LEN        20
 
 // Defined string description
 #define IMANUFACTURER	1
