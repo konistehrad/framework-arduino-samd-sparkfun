@@ -38,7 +38,6 @@ typedef uint16_t word;
 #include "avr/io.h"
 
 #include "binary.h"
-#include "itoa.h"
 
 #ifdef __cplusplus
 extern "C"{
