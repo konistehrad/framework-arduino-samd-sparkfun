@@ -1,0 +1,15 @@
+{
+  "name": "framework-arduino-samd-sparkfun",
+  "version": "1.7.5-ck",
+  "description": "Arduino Wiring-based Framework for Microchip SAM D microcontrollers (SparkFun SAMD Core)",
+  "keywords": [
+    "framework",
+    "arduino",
+    "microchip",
+    "samd"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sparkfun/Arduino_Boards/tree/master/sparkfun/samd"
+  }
+}
